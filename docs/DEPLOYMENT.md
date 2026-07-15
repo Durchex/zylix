@@ -120,8 +120,12 @@ The concrete path this deployment actually used, as an alternative to §3/§4's 
 
 **Web on Netlify:**
 1. Netlify dashboard → Add new site → Import from Git → select this repo. `netlify.toml` sets the base directory (`apps/web`) and build command (`cd ../.. && npm ci && npm run build:web`, same monorepo-root-install reasoning as `apps/web/vercel.json`), and registers `@netlify/plugin-nextjs` for SSR support.
-2. Site configuration → Environment variables → add `API_URL` set to the Render API's `.onrender.com` URL (or custom domain).
-3. Deploy. Confirm in the deployed site's Network tab that a request like `/api/v1/auth/refresh` actually reaches the Render API (proxied via `next.config.mjs`'s `rewrites()`, same mechanism as Vercel) rather than 404ing.
+2. Site configuration → Environment variables → add:
+   - `API_URL` — the Render API's `.onrender.com` URL (or custom domain). Used server-side by `serverApiRequest` (Server Components) — always a direct call, never proxied.
+   - `NEXT_PUBLIC_API_URL` — same value. Used client-side by `apiRequest` (`apps/web/src/lib/api-client.ts`) to call the API directly via CORS instead of through `next.config.mjs`'s `rewrites()`. **Required on Netlify specifically** — its Next.js Runtime doesn't reliably proxy `rewrites()` to an external origin (observed as a bare 500 from Netlify's own edge layer, never reaching the API); direct CORS calls sidestep that entirely. Vercel's rewrites() proxy works fine, so this is optional there.
+3. Deploy. Confirm in the deployed site's Network tab that requests like `/api/v1/auth/refresh` go directly to the `.onrender.com` origin (not the Netlify domain) and succeed.
 4. Attach a custom domain if desired, then go back and set the Render API's `APP_URL` to the final Netlify URL and redeploy.
+
+**Cross-origin cookies:** since the frontend and API are on different domains here, the refresh-token cookie is set with `sameSite: "none"` in production (`apps/api/src/controllers/auth.controller.ts`) — required for the browser to send it on a cross-site fetch at all. Paired with `secure: true` (already conditional on `NODE_ENV === "production"`), per the `SameSite=None` spec requirement. Local dev keeps `sameSite: "lax"` since frontend and API are same-site there via the rewrite proxy.
 
 Everything else — webhook registration, health check monitoring, migration discipline, rollback — follows §5 and §8 unchanged; only the hosting provider differs.

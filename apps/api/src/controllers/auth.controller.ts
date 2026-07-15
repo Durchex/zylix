@@ -17,7 +17,12 @@ const REFRESH_COOKIE_MAX_AGE_MS = 30 * 24 * 60 * 60 * 1000;
 const refreshCookieOptions: CookieOptions = {
   httpOnly: true,
   secure: env.NODE_ENV === "production",
-  sameSite: "lax",
+  // "none" is required for the frontend/API to authenticate across two
+  // different domains (e.g. Netlify + Render) — browsers won't send a "lax"
+  // cookie on a cross-site fetch. Only valid paired with secure:true, so
+  // local dev (http://localhost, no TLS) stays on "lax" where frontend and
+  // API are same-site anyway via the Next.js rewrite proxy.
+  sameSite: env.NODE_ENV === "production" ? "none" : "lax",
   path: "/api/v1/auth",
   maxAge: REFRESH_COOKIE_MAX_AGE_MS,
 };
