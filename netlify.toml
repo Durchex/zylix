@@ -10,6 +10,13 @@
   command = "cd ../.. && npm ci && npm run build:web"
   publish = ".next"
 
+[build.environment]
+  # Netlify sets NODE_ENV=production for builds, which makes npm skip
+  # devDependencies by default — but prisma (needed by the root postinstall
+  # hook's `prisma generate`) and typescript (needed by `next build`) are
+  # both devDependencies. Without this, install fails with "prisma: not found".
+  NPM_FLAGS = "--include=dev"
+
 [[plugins]]
   package = "@netlify/plugin-nextjs"
 
