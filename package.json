@@ -23,7 +23,7 @@
     "test:api": "npm --prefix apps/api run test",
     "prisma:generate": "npm --prefix apps/api run prisma:generate",
     "prisma:migrate": "npm --prefix apps/api run prisma:migrate",
-    "postinstall": "npm run prisma:generate"
+    "postinstall": "node scripts/postinstall.js"
   },
   "devDependencies": {
     "concurrently": "^8.2.2"
