@@ -107,3 +107,21 @@ Both Dockerfiles build from the **repo root** as context (`docker build -f apps/
 - **Vercel:** every deployment is immutable and keeps its own URL — use the dashboard's "Promote to Production" on a prior deployment, no rebuild needed.
 - **API:** redeploy the previous image tag/commit on whichever platform is used (Railway/Render both keep deployment history with one-click rollback; a bare Docker host should tag images by commit SHA so `docker run zylix-api:<previous-sha>` is always available).
 - **Database migrations:** `prisma migrate deploy` is forward-only by design. A migration that must be undone needs a new forward migration that reverses the change — never edit or delete an already-applied migration file.
+
+## 9. Render + Netlify path
+
+The concrete path this deployment actually used, as an alternative to §3/§4's Railway/Vercel example — same architecture, different providers. `render.yaml` (repo root) and `netlify.toml` (repo root) hold the config; both still follow §2's environment variable contract exactly.
+
+**API on Render:**
+1. Render dashboard → New → Blueprint → select this repo → it reads `render.yaml`, which provisions a managed Postgres database and the `zylix-api` web service (built from `apps/api/Dockerfile`, context = repo root, health check = `/api/v1/health`, JWT secrets auto-generated).
+2. Render's managed Redis product ("Key Value") isn't in the blueprint — its schema field has changed across Render's product history, so create it manually: New → Key Value → copy its connection string into `zylix-api`'s `REDIS_URL` env var.
+3. Set the remaining `sync: false` variables in the blueprint (`APP_URL`, Cloudinary, payment provider keys) in the `zylix-api` service's Environment tab. `APP_URL` needs the Netlify URL from the next step.
+4. Run the migration once against the Render Postgres external connection string: `npx prisma migrate deploy --schema=apps/api/prisma/schema.prisma` (same command as §3 step 5).
+
+**Web on Netlify:**
+1. Netlify dashboard → Add new site → Import from Git → select this repo. `netlify.toml` sets the base directory (`apps/web`) and build command (`cd ../.. && npm ci && npm run build:web`, same monorepo-root-install reasoning as `apps/web/vercel.json`), and registers `@netlify/plugin-nextjs` for SSR support.
+2. Site configuration → Environment variables → add `API_URL` set to the Render API's `.onrender.com` URL (or custom domain).
+3. Deploy. Confirm in the deployed site's Network tab that a request like `/api/v1/auth/refresh` actually reaches the Render API (proxied via `next.config.mjs`'s `rewrites()`, same mechanism as Vercel) rather than 404ing.
+4. Attach a custom domain if desired, then go back and set the Render API's `APP_URL` to the final Netlify URL and redeploy.
+
+Everything else — webhook registration, health check monitoring, migration discipline, rollback — follows §5 and §8 unchanged; only the hosting provider differs.
