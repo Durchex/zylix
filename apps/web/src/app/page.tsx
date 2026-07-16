@@ -1,8 +1,7 @@
-import { Suspense } from "react";
 import Link from "next/link";
 import { Container } from "@/components/ui/Container";
 import { Button } from "@/components/ui/Button";
-import { ProductGrid, ProductGridEmpty, ProductGridSkeleton } from "@/components/storefront/ProductGrid";
+import { ProductGrid, ProductGridEmpty } from "@/components/storefront/ProductGrid";
 import { FadeIn } from "@/components/motion/FadeIn";
 import { serverApiRequest } from "@/lib/server-api";
 import type { PaginatedResult, ProductSummary } from "@/types/product";
@@ -26,21 +25,7 @@ const FEATURED_CATEGORIES = [
   { name: "Home Electronics", slug: "home-electronics" },
 ];
 
-async function ProductSectionContent({ query }: { query: string }) {
-  const result = await serverApiRequest<PaginatedResult<ProductSummary>>(
-    `/products${query}`,
-    { tags: ["products"] },
-  );
-  const products = result?.items ?? [];
-
-  return products.length > 0 ? (
-    <ProductGrid products={products} />
-  ) : (
-    <ProductGridEmpty message="Catalog coming soon — check back shortly." />
-  );
-}
-
-function ProductSection({
+async function ProductSection({
   title,
   href,
   query,
@@ -49,6 +34,18 @@ function ProductSection({
   href: string;
   query: string;
 }) {
+  // Deliberately not wrapped in <Suspense> — on Netlify's Next.js Runtime,
+  // Suspense boundaries around async Server Components get stuck in their
+  // fallback state forever (confirmed via the "<template>" streaming marker
+  // never resolving in the shipped HTML, even after a fresh reload). A plain
+  // top-level await renders reliably instead, at the cost of the per-section
+  // skeleton streaming effect.
+  const result = await serverApiRequest<PaginatedResult<ProductSummary>>(
+    `/products${query}`,
+    { tags: ["products"] },
+  );
+  const products = result?.items ?? [];
+
   return (
     <FadeIn>
       <section className="py-12">
@@ -63,9 +60,11 @@ function ProductSection({
             View all
           </Link>
         </div>
-        <Suspense fallback={<ProductGridSkeleton />}>
-          <ProductSectionContent query={query} />
-        </Suspense>
+        {products.length > 0 ? (
+          <ProductGrid products={products} />
+        ) : (
+          <ProductGridEmpty message="Catalog coming soon — check back shortly." />
+        )}
       </section>
     </FadeIn>
   );

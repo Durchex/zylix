@@ -302,8 +302,8 @@ async function main() {
     update: {},
     create: {
       userId: sellerUser.id,
-      storeName: "Durchex D.A.M",
-      storeSlug: "durchex",
+      storeName: "zeylixstore",
+      storeSlug: "zeylixstore",
       description: "The official ZYLIX store, powered by Durchex D.A.M Company LTD.",
       status: "APPROVED",
       commissionRate: 0,
