@@ -12,6 +12,7 @@ import { Checkbox } from "@/components/ui/Checkbox";
 import { Button } from "@/components/ui/Button";
 import { Alert } from "@/components/ui/Alert";
 import { Card, CardBody, CardHeader } from "@/components/ui/Card";
+import { ImageUploadField } from "@/components/admin/ImageUploadField";
 import { apiRequest, ApiRequestError } from "@/lib/api-client";
 import { adminProductsApi } from "@/lib/api/admin";
 import type { AdminProduct } from "@/types/admin";
@@ -102,6 +103,8 @@ export function ProductForm({ productId }: { productId?: string }) {
     handleSubmit,
     control,
     reset,
+    watch,
+    setValue,
     formState: { errors, isSubmitting },
   } = useForm<ProductFormValues>({
     resolver: zodResolver(productFormSchema),
@@ -151,7 +154,7 @@ export function ProductForm({ productId }: { productId?: string }) {
 
       <Card>
         <CardHeader>
-          <p className="font-semibold text-ink-900">Basic information</p>
+          <p className="font-semibold text-ink-900 dark:text-neutral-100">Basic information</p>
         </CardHeader>
         <CardBody className="space-y-4">
           <div className="grid gap-4 sm:grid-cols-2">
@@ -191,7 +194,7 @@ export function ProductForm({ productId }: { productId?: string }) {
 
       <Card>
         <CardHeader>
-          <p className="font-semibold text-ink-900">Pricing & status</p>
+          <p className="font-semibold text-ink-900 dark:text-neutral-100">Pricing & status</p>
         </CardHeader>
         <CardBody className="space-y-4">
           <div className="grid gap-4 sm:grid-cols-3">
@@ -221,7 +224,7 @@ export function ProductForm({ productId }: { productId?: string }) {
 
       <Card>
         <CardHeader className="flex items-center justify-between">
-          <p className="font-semibold text-ink-900">Images</p>
+          <p className="font-semibold text-ink-900 dark:text-neutral-100">Images</p>
           <Button
             type="button"
             variant="outline"
@@ -236,18 +239,22 @@ export function ProductForm({ productId }: { productId?: string }) {
             <p className="text-sm text-neutral-500">No images added yet.</p>
           )}
           {imageFields.fields.map((field, index) => (
-            <div key={field.id} className="flex gap-3">
-              <Input
-                placeholder="https://res.cloudinary.com/..."
-                error={errors.images?.[index]?.url?.message}
-                {...register(`images.${index}.url`)}
+            <div key={field.id} className="flex items-start gap-3 rounded-xl border border-neutral-200 p-4 dark:border-surface-800">
+              <ImageUploadField
+                value={watch(`images.${index}.url`)}
+                onChange={(url) => setValue(`images.${index}.url`, url, { shouldValidate: true })}
                 className="flex-1"
               />
-              <Input
-                placeholder="Alt text"
-                {...register(`images.${index}.altText`)}
-                className="flex-1"
-              />
+              <div className="flex flex-1 flex-col gap-2">
+                <Input
+                  label="Alt text"
+                  placeholder="Describe the image"
+                  {...register(`images.${index}.altText`)}
+                />
+                {errors.images?.[index]?.url?.message && (
+                  <p className="text-sm text-error">{errors.images[index]?.url?.message}</p>
+                )}
+              </div>
               <Button type="button" variant="ghost" onClick={() => imageFields.remove(index)}>
                 Remove
               </Button>
@@ -258,7 +265,7 @@ export function ProductForm({ productId }: { productId?: string }) {
 
       <Card>
         <CardHeader className="flex items-center justify-between">
-          <p className="font-semibold text-ink-900">Variants</p>
+          <p className="font-semibold text-ink-900 dark:text-neutral-100">Variants</p>
           <Button
             type="button"
             variant="outline"

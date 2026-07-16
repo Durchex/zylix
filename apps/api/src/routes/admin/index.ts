@@ -7,6 +7,7 @@ import { adminOrderRouter } from "@/routes/admin/order.routes";
 import { adminSellerRouter } from "@/routes/admin/seller.routes";
 import { adminUserRouter } from "@/routes/admin/user.routes";
 import { adminBlogRouter } from "@/routes/admin/blog.routes";
+import { adminUploadRouter } from "@/routes/admin/upload.routes";
 import { adminDashboardController } from "@/controllers/admin/dashboard.controller";
 import { auditLogController } from "@/controllers/admin/auditLog.controller";
 
@@ -25,3 +26,4 @@ adminRouter.use("/orders", adminOrderRouter);
 adminRouter.use("/sellers", adminSellerRouter);
 adminRouter.use("/users", adminUserRouter);
 adminRouter.use("/blog", adminBlogRouter);
+adminRouter.use("/uploads", adminUploadRouter);

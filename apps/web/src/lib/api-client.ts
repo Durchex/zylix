@@ -72,3 +72,51 @@ export async function apiRequest<T>(path: string, options: RequestOptions = {}):
 
   return payload as T;
 }
+
+async function rawUpload(path: string, file: File, accessToken: string | null) {
+  const formData = new FormData();
+  formData.append("file", file);
+
+  const headers: Record<string, string> = {};
+  if (accessToken) headers["Authorization"] = `Bearer ${accessToken}`;
+
+  // No Content-Type header here — the browser sets the correct multipart
+  // boundary itself when the body is a FormData instance.
+  return fetch(`${API_BASE}${path}`, {
+    method: "POST",
+    headers,
+    credentials: "include",
+    body: formData,
+  });
+}
+
+/**
+ * Same 401-refresh-retry behavior as apiRequest, but for multipart file
+ * uploads (apiRequest always JSON-encodes its body, which doesn't work for
+ * File/Blob payloads).
+ */
+export async function uploadFile(path: string, file: File): Promise<{ url: string }> {
+  const { accessToken, setSession, clearSession } = useAuthStore.getState();
+
+  let res = await rawUpload(path, file, accessToken);
+
+  if (res.status === 401) {
+    const refreshed = await rawRequest("/auth/refresh", { method: "POST" }, null);
+    if (refreshed.ok) {
+      const data = await refreshed.json();
+      setSession(data.user, data.accessToken);
+      res = await rawUpload(path, file, data.accessToken);
+    } else {
+      clearSession();
+    }
+  }
+
+  const contentType = res.headers.get("content-type");
+  const payload = contentType?.includes("application/json") ? await res.json() : null;
+
+  if (!res.ok) {
+    throw new ApiRequestError(res.status, payload?.error?.message ?? "Upload failed. Please try again.");
+  }
+
+  return payload as { url: string };
+}

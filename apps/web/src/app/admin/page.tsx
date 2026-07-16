@@ -15,8 +15,8 @@ function StatCard({ label, value }: { label: string; value: string | number }) {
   return (
     <Card>
       <CardBody>
-        <p className="text-sm text-neutral-500">{label}</p>
-        <p className="mt-1 text-2xl font-bold text-ink-900">{value}</p>
+        <p className="text-sm text-neutral-500 dark:text-neutral-400">{label}</p>
+        <p className="mt-1 text-2xl font-bold text-ink-900 dark:text-neutral-50">{value}</p>
       </CardBody>
     </Card>
   );
@@ -35,7 +35,7 @@ export default function AdminDashboardPage() {
 
   return (
     <div>
-      <h1 className="text-2xl font-bold tracking-tight text-ink-900">Dashboard</h1>
+      <h1 className="text-2xl font-bold tracking-tight text-ink-900 dark:text-neutral-50">Dashboard</h1>
 
       {error && (
         <Alert variant="error" className="mt-6">
@@ -63,25 +63,25 @@ export default function AdminDashboardPage() {
           </div>
 
           <div className="mt-8">
-            <h2 className="mb-3 font-semibold text-ink-900">Recent Orders</h2>
+            <h2 className="mb-3 font-semibold text-ink-900 dark:text-neutral-50">Recent Orders</h2>
             <Card>
               {stats.recentOrders.length === 0 ? (
                 <CardBody>
-                  <p className="text-sm text-neutral-500">No orders yet.</p>
+                  <p className="text-sm text-neutral-500 dark:text-neutral-400">No orders yet.</p>
                 </CardBody>
               ) : (
-                <div className="divide-y divide-neutral-200">
+                <div className="divide-y divide-neutral-200 dark:divide-surface-800">
                   {stats.recentOrders.map((order) => (
                     <div key={order.id} className="flex items-center justify-between p-4 text-sm">
                       <div>
-                        <p className="font-medium text-ink-900">{order.orderNumber}</p>
-                        <p className="text-neutral-500">
+                        <p className="font-medium text-ink-900 dark:text-neutral-100">{order.orderNumber}</p>
+                        <p className="text-neutral-500 dark:text-neutral-400">
                           {new Date(order.placedAt).toLocaleDateString("en-NG")}
                         </p>
                       </div>
                       <div className="flex items-center gap-3">
                         <Badge variant="neutral">{order.status}</Badge>
-                        <span className="font-medium text-ink-900">
+                        <span className="font-medium text-ink-900 dark:text-neutral-100">
                           {formatPrice(Number(order.total))}
                         </span>
                       </div>
@@ -93,10 +93,10 @@ export default function AdminDashboardPage() {
           </div>
 
           <div className="mt-8 flex gap-3">
-            <Link href="/admin/catalog/products" className="text-sm font-medium text-brand-600 hover:underline">
+            <Link href="/admin/catalog/products" className="text-sm font-medium text-brand-600 hover:underline dark:text-accent-400">
               Manage products →
             </Link>
-            <Link href="/admin/catalog/categories" className="text-sm font-medium text-brand-600 hover:underline">
+            <Link href="/admin/catalog/categories" className="text-sm font-medium text-brand-600 hover:underline dark:text-accent-400">
               Manage categories →
             </Link>
           </div>

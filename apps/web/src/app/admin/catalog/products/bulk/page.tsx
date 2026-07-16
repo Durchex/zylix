@@ -12,6 +12,7 @@ import { Select } from "@/components/ui/Select";
 import { Button } from "@/components/ui/Button";
 import { Alert } from "@/components/ui/Alert";
 import { Card, CardBody, CardHeader } from "@/components/ui/Card";
+import { ImageUploadField } from "@/components/admin/ImageUploadField";
 import { apiRequest, ApiRequestError } from "@/lib/api-client";
 import { adminProductsApi } from "@/lib/api/admin";
 import type { CategorySummary } from "@/types/product";
@@ -65,6 +66,8 @@ export default function BulkAddProductsPage() {
     register,
     handleSubmit,
     control,
+    watch,
+    setValue,
     formState: { errors, isSubmitting },
   } = useForm<BulkFormValues>({
     resolver: zodResolver(bulkFormSchema),
@@ -215,21 +218,21 @@ export default function BulkAddProductsPage() {
                 error={errors.rows?.[index]?.description?.message}
                 {...register(`rows.${index}.description`)}
               />
-              <div className="grid gap-4 sm:grid-cols-2">
-                <Input
-                  label="Price (NGN)"
-                  type="number"
-                  step="0.01"
-                  error={errors.rows?.[index]?.basePrice?.message}
-                  {...register(`rows.${index}.basePrice`)}
-                />
-                <Input
-                  label="Image URL (optional)"
-                  placeholder="https://res.cloudinary.com/..."
-                  error={errors.rows?.[index]?.imageUrl?.message}
-                  {...register(`rows.${index}.imageUrl`)}
-                />
-              </div>
+              <Input
+                label="Price (NGN)"
+                type="number"
+                step="0.01"
+                error={errors.rows?.[index]?.basePrice?.message}
+                {...register(`rows.${index}.basePrice`)}
+              />
+              <ImageUploadField
+                label="Image (optional)"
+                value={watch(`rows.${index}.imageUrl`) ?? ""}
+                onChange={(url) => setValue(`rows.${index}.imageUrl`, url, { shouldValidate: true })}
+              />
+              {errors.rows?.[index]?.imageUrl?.message && (
+                <p className="text-sm text-error">{errors.rows[index]?.imageUrl?.message}</p>
+              )}
             </CardBody>
           </Card>
         ))}

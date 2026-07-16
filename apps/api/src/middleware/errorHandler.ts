@@ -1,5 +1,6 @@
 import type { NextFunction, Request, Response } from "express";
 import { ZodError } from "zod";
+import { MulterError } from "multer";
 import { logger } from "@/lib/logger";
 
 export class ApiError extends Error {
@@ -35,6 +36,12 @@ export function errorHandler(
         issues: err.flatten().fieldErrors,
       },
     });
+    return;
+  }
+
+  if (err instanceof MulterError) {
+    const message = err.code === "LIMIT_FILE_SIZE" ? "Image must be smaller than 5MB" : err.message;
+    res.status(400).json({ error: { message } });
     return;
   }
 

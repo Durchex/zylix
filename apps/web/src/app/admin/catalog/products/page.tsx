@@ -90,7 +90,7 @@ export default function AdminProductsPage() {
         </Alert>
       )}
 
-      <div className="mt-6 overflow-x-auto rounded-2xl border border-neutral-200 bg-white">
+      <div className="mt-6 overflow-x-auto rounded-2xl border border-neutral-200 bg-white dark:border-surface-800 dark:bg-surface-900">
         {!products ? (
           <div className="space-y-2 p-4">
             {Array.from({ length: 5 }, (_, i) => (
@@ -98,10 +98,10 @@ export default function AdminProductsPage() {
             ))}
           </div>
         ) : products.length === 0 ? (
-          <p className="p-6 text-sm text-neutral-500">No products found.</p>
+          <p className="p-6 text-sm text-neutral-500 dark:text-neutral-400">No products found.</p>
         ) : (
           <table className="w-full min-w-[720px] text-sm">
-            <thead className="border-b border-neutral-200 bg-neutral-50 text-left text-xs uppercase tracking-wide text-neutral-500">
+            <thead className="border-b border-neutral-200 bg-neutral-50 text-left text-xs uppercase tracking-wide text-neutral-500 dark:border-surface-800 dark:bg-surface-800 dark:text-neutral-400">
               <tr>
                 <th className="px-4 py-3">Product</th>
                 <th className="px-4 py-3">SKU</th>
@@ -111,13 +111,13 @@ export default function AdminProductsPage() {
                 <th className="px-4 py-3" />
               </tr>
             </thead>
-            <tbody className="divide-y divide-neutral-200">
+            <tbody className="divide-y divide-neutral-200 dark:divide-surface-800">
               {products.map((product) => (
                 <tr key={product.id}>
-                  <td className="px-4 py-3 font-medium text-ink-900">{product.name}</td>
-                  <td className="px-4 py-3 text-neutral-500">{product.sku}</td>
-                  <td className="px-4 py-3 text-neutral-500">{product.category.name}</td>
-                  <td className="px-4 py-3 text-ink-900">{formatPrice(Number(product.basePrice))}</td>
+                  <td className="px-4 py-3 font-medium text-ink-900 dark:text-neutral-100">{product.name}</td>
+                  <td className="px-4 py-3 text-neutral-500 dark:text-neutral-400">{product.sku}</td>
+                  <td className="px-4 py-3 text-neutral-500 dark:text-neutral-400">{product.category.name}</td>
+                  <td className="px-4 py-3 text-ink-900 dark:text-neutral-100">{formatPrice(Number(product.basePrice))}</td>
                   <td className="px-4 py-3">
                     <Badge variant={statusBadgeVariant[product.status]}>{product.status}</Badge>
                   </td>
@@ -125,7 +125,7 @@ export default function AdminProductsPage() {
                     <div className="flex justify-end gap-3">
                       <Link
                         href={`/admin/catalog/products/${product.id}`}
-                        className="text-sm font-medium text-brand-600 hover:underline"
+                        className="text-sm font-medium text-brand-600 hover:underline dark:text-accent-400"
                       >
                         Edit
                       </Link>
@@ -147,7 +147,7 @@ export default function AdminProductsPage() {
       </div>
 
       {products && (
-        <p className="mt-3 text-sm text-neutral-500">{total} product{total === 1 ? "" : "s"} total</p>
+        <p className="mt-3 text-sm text-neutral-500 dark:text-neutral-400">{total} product{total === 1 ? "" : "s"} total</p>
       )}
     </div>
   );
