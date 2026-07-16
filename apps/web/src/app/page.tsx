@@ -6,6 +6,15 @@ import { FadeIn } from "@/components/motion/FadeIn";
 import { serverApiRequest } from "@/lib/server-api";
 import type { PaginatedResult, ProductSummary } from "@/types/product";
 
+// Forces a fresh server render on every request instead of Next's default
+// static-generation-with-ISR. Netlify's Next.js Runtime doesn't reliably
+// re-generate this page on its 60s revalidate schedule (confirmed: the
+// homepage kept serving an empty "Catalog coming soon" snapshot from the
+// build-time render long after real products existed and the API itself
+// was responding correctly and fast) — same category of runtime gap as the
+// earlier Suspense-streaming and external-rewrites issues on this host.
+export const revalidate = 0;
+
 const CATEGORY_ICON_PATHS: Record<string, string> = {
   smartphones: "M8 3h8a1 1 0 011 1v16a1 1 0 01-1 1H8a1 1 0 01-1-1V4a1 1 0 011-1zM10.5 18h3",
   laptops: "M4 5h16v10H4zM2 17h20l-2 3H4z",
