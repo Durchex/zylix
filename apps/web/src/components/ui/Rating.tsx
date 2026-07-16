@@ -25,7 +25,7 @@ function Star({
         fill={half ? `url(#${gradientId})` : filled ? "currentColor" : "none"}
         stroke="currentColor"
         strokeWidth="1"
-        className={filled || half ? "text-brand-500" : "text-neutral-300"}
+        className={filled || half ? "text-accent-500 dark:text-accent-400" : "text-neutral-300 dark:text-surface-700"}
       />
     </svg>
   );
@@ -57,7 +57,7 @@ export function Rating({
     >
       <div className="flex">{stars}</div>
       {typeof count === "number" && (
-        <span className="text-xs text-neutral-500">({count.toLocaleString()})</span>
+        <span className="text-xs text-neutral-500 dark:text-neutral-400">({count.toLocaleString()})</span>
       )}
     </div>
   );

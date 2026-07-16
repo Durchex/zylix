@@ -3,6 +3,7 @@ import { Inter } from "next/font/google";
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
 import { SessionProvider } from "@/components/providers/SessionProvider";
+import { ThemeProvider } from "@/components/providers/ThemeProvider";
 import "./globals.css";
 
 const inter = Inter({
@@ -26,13 +27,15 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" className={inter.variable}>
+    <html lang="en" className={inter.variable} suppressHydrationWarning>
       <body className="flex min-h-screen flex-col font-sans antialiased">
-        <SessionProvider>
-          <Header />
-          <div className="flex-1">{children}</div>
-          <Footer />
-        </SessionProvider>
+        <ThemeProvider>
+          <SessionProvider>
+            <Header />
+            <div className="flex-1">{children}</div>
+            <Footer />
+          </SessionProvider>
+        </ThemeProvider>
       </body>
     </html>
   );

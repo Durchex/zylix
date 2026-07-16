@@ -18,17 +18,17 @@ export function ProductCard({ product }: { product: ProductSummary }) {
   const compareFull = useCompareStore((s) => s.isFull());
 
   return (
-    <div className="group relative flex flex-col overflow-hidden rounded-2xl border border-neutral-200 bg-white transition-shadow hover:shadow-elevated">
+    <div className="group relative flex flex-col overflow-hidden rounded-2xl border border-neutral-200 bg-white transition-all hover:-translate-y-1 hover:shadow-elevated dark:border-surface-800 dark:bg-surface-900 dark:hover:shadow-glow-dark">
       <button
         type="button"
         onClick={() => toggleWishlist(product.id)}
         aria-pressed={inWishlist}
         aria-label={inWishlist ? "Remove from wishlist" : "Add to wishlist"}
-        className="absolute right-3 top-3 z-10 flex h-8 w-8 items-center justify-center rounded-full bg-white/90 text-ink-900 shadow-soft hover:bg-white"
+        className="absolute right-3 top-3 z-10 flex h-8 w-8 items-center justify-center rounded-full bg-white/90 text-ink-900 shadow-soft hover:bg-white dark:bg-surface-800/90 dark:text-neutral-100 dark:hover:bg-surface-800"
       >
         <svg
           viewBox="0 0 20 20"
-          className={cn("h-4 w-4", inWishlist ? "fill-brand-500 text-brand-500" : "fill-none text-neutral-500")}
+          className={cn("h-4 w-4", inWishlist ? "fill-brand-500 text-brand-500" : "fill-none text-neutral-500 dark:text-neutral-400")}
           stroke="currentColor"
           strokeWidth="1.5"
         >
@@ -37,17 +37,17 @@ export function ProductCard({ product }: { product: ProductSummary }) {
       </button>
 
       <Link href={`/products/${product.slug}`} className="block">
-        <div className="relative aspect-square bg-neutral-50">
+        <div className="relative aspect-square overflow-hidden bg-neutral-50 dark:bg-surface-800">
           {product.primaryImage ? (
             <Image
               src={product.primaryImage.url}
               alt={product.primaryImage.altText ?? product.name}
               fill
               sizes="(min-width: 1024px) 25vw, (min-width: 640px) 33vw, 50vw"
-              className="object-contain p-6"
+              className="object-contain p-6 transition-transform duration-300 group-hover:scale-105"
             />
           ) : (
-            <div className="flex h-full items-center justify-center text-sm text-neutral-400">
+            <div className="flex h-full items-center justify-center text-sm text-neutral-400 dark:text-neutral-500">
               No image
             </div>
           )}
@@ -60,11 +60,11 @@ export function ProductCard({ product }: { product: ProductSummary }) {
       </Link>
 
       <div className="flex flex-1 flex-col gap-1.5 p-4">
-        <p className="text-xs font-medium uppercase tracking-wide text-neutral-400">
+        <p className="text-xs font-medium uppercase tracking-wide text-neutral-400 dark:text-neutral-500">
           {product.brand}
         </p>
         <Link href={`/products/${product.slug}`}>
-          <h3 className="line-clamp-2 text-sm font-medium text-ink-900 hover:text-brand-600">
+          <h3 className="line-clamp-2 text-sm font-medium text-ink-900 hover:text-brand-600 dark:text-neutral-100 dark:hover:text-accent-400">
             {product.name}
           </h3>
         </Link>
@@ -81,8 +81,8 @@ export function ProductCard({ product }: { product: ProductSummary }) {
           onClick={() => toggleCompare(product.id)}
           disabled={!inCompare && compareFull}
           className={cn(
-            "mt-2 self-start text-xs font-medium underline-offset-2 hover:underline disabled:cursor-not-allowed disabled:text-neutral-300 disabled:no-underline",
-            inCompare ? "text-brand-600" : "text-neutral-500",
+            "mt-2 self-start text-xs font-medium underline-offset-2 hover:underline disabled:cursor-not-allowed disabled:text-neutral-300 disabled:no-underline dark:disabled:text-surface-700",
+            inCompare ? "text-brand-600 dark:text-accent-400" : "text-neutral-500 dark:text-neutral-400",
           )}
         >
           {inCompare ? "Remove from compare" : "Add to compare"}

@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { AnimatePresence, motion } from "framer-motion";
 import { Button } from "@/components/ui/Button";
 import { Select } from "@/components/ui/Select";
 import { PriceTag } from "@/components/ui/PriceTag";
@@ -73,7 +74,7 @@ export function AddToCartPanel({ product }: { product: ProductDetail }) {
       )}
 
       <div className="flex items-center gap-3">
-        <label htmlFor="quantity" className="text-sm font-medium text-neutral-700">
+        <label htmlFor="quantity" className="text-sm font-medium text-neutral-700 dark:text-neutral-300">
           Qty
         </label>
         <select
@@ -81,7 +82,7 @@ export function AddToCartPanel({ product }: { product: ProductDetail }) {
           value={quantity}
           onChange={(e) => setQuantity(Number(e.target.value))}
           disabled={!inStock}
-          className="h-10 rounded-xl border border-neutral-300 px-3 text-sm disabled:opacity-50"
+          className="h-10 rounded-xl border border-neutral-300 px-3 text-sm disabled:opacity-50 dark:border-surface-700 dark:bg-surface-900 dark:text-neutral-100"
         >
           {Array.from({ length: Math.min(stock, 10) || 1 }, (_, i) => i + 1).map((n) => (
             <option key={n} value={n}>
@@ -92,8 +93,28 @@ export function AddToCartPanel({ product }: { product: ProductDetail }) {
       </div>
 
       <div className="flex gap-3">
-        <Button className="flex-1" disabled={!inStock} onClick={handleAddToCart}>
-          {justAdded ? "Added ✓" : "Add to cart"}
+        <Button className="relative flex-1 overflow-hidden" disabled={!inStock} onClick={handleAddToCart}>
+          <AnimatePresence mode="wait" initial={false}>
+            <motion.span
+              key={justAdded ? "added" : "idle"}
+              initial={{ y: 12, opacity: 0 }}
+              animate={{ y: 0, opacity: 1 }}
+              exit={{ y: -12, opacity: 0 }}
+              transition={{ duration: 0.18 }}
+              className="inline-flex items-center gap-1.5"
+            >
+              {justAdded ? (
+                <>
+                  <svg viewBox="0 0 20 20" className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="2">
+                    <path d="M4 10l4 4 8-8" strokeLinecap="round" strokeLinejoin="round" />
+                  </svg>
+                  Added
+                </>
+              ) : (
+                "Add to cart"
+              )}
+            </motion.span>
+          </AnimatePresence>
         </Button>
         <Button
           variant="outline"
@@ -113,7 +134,10 @@ export function AddToCartPanel({ product }: { product: ProductDetail }) {
         >
           <svg
             viewBox="0 0 20 20"
-            className={cn("h-5 w-5", wishlisted ? "fill-brand-500 text-brand-500" : "fill-none text-neutral-500")}
+            className={cn(
+              "h-5 w-5",
+              wishlisted ? "fill-brand-500 text-brand-500" : "fill-none text-neutral-500 dark:text-neutral-400",
+            )}
             stroke="currentColor"
             strokeWidth="1.5"
           >

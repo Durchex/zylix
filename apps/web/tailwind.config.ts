@@ -6,18 +6,56 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
+        // Primary brand blue (was gold) — rebrand per the new premium
+        // electronics identity. Anchor: 600 = #1428A0.
         brand: {
-          50: "#FBF7ED",
-          100: "#F5EAD1",
-          200: "#EBD5A3",
-          300: "#DFBC74",
-          400: "#D3A752",
-          500: "#C9A24B",
-          600: "#B08535",
-          700: "#8C6929",
-          800: "#6B4F20",
-          900: "#4A3717",
-          950: "#2E220E",
+          50: "#EEF0FB",
+          100: "#D6DBF5",
+          200: "#AEB8EB",
+          300: "#7F8FDD",
+          400: "#4D5FC7",
+          500: "#2438B0",
+          600: "#1428A0",
+          700: "#101F80",
+          800: "#0C1760",
+          900: "#080F40",
+          950: "#050A2A",
+        },
+        secondary: {
+          50: "#EEF2FC",
+          100: "#D6E0F7",
+          200: "#AEC1EF",
+          300: "#7F9CE4",
+          400: "#4D71D6",
+          500: "#2C55C0",
+          600: "#1E40AF",
+          700: "#17348C",
+          800: "#112869",
+          900: "#0B1B46",
+          950: "#07112E",
+        },
+        accent: {
+          50: "#E6F9FF",
+          100: "#B3EDFF",
+          200: "#80E1FF",
+          300: "#4DD5FF",
+          400: "#1AC9FF",
+          500: "#00AEEF",
+          600: "#008CC0",
+          700: "#006991",
+          800: "#004761",
+          900: "#002432",
+          950: "#001219",
+        },
+        // Dark-mode-oriented navy surfaces — page background/card in dark
+        // mode (light mode continues to use plain white/neutral-50/#F8FAFC).
+        surface: {
+          50: "#F8FAFC",
+          100: "#EEF1F6",
+          200: "#E2E7EF",
+          800: "#1A2236",
+          900: "#131A2A",
+          950: "#0B0F19",
         },
         ink: {
           950: "#08080A",
@@ -53,6 +91,23 @@ const config: Config = {
       boxShadow: {
         soft: "0 2px 8px rgba(10, 10, 12, 0.06)",
         elevated: "0 8px 24px rgba(10, 10, 12, 0.10)",
+        glow: "0 8px 32px rgba(20, 40, 160, 0.25)",
+        "glow-dark": "0 8px 32px rgba(0, 174, 239, 0.15)",
+      },
+      backgroundImage: {
+        "gradient-brand": "linear-gradient(135deg, #1428A0 0%, #1E40AF 55%, #00AEEF 100%)",
+        "gradient-radial-glow": "radial-gradient(circle at 30% 20%, rgba(0, 174, 239, 0.25), transparent 60%)",
+      },
+      keyframes: {
+        "fade-in": { from: { opacity: "0" }, to: { opacity: "1" } },
+        "fade-in-up": {
+          from: { opacity: "0", transform: "translateY(12px)" },
+          to: { opacity: "1", transform: "translateY(0)" },
+        },
+      },
+      animation: {
+        "fade-in": "fade-in 0.4s ease-out",
+        "fade-in-up": "fade-in-up 0.5s ease-out",
       },
     },
   },

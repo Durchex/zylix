@@ -4,14 +4,15 @@ import { cn } from "@/lib/utils";
 import { Spinner } from "@/components/ui/Spinner";
 
 export const buttonVariants = cva(
-  "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-xl font-semibold transition-colors disabled:pointer-events-none disabled:opacity-50",
+  "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-xl font-semibold transition-all active:scale-[0.98] disabled:pointer-events-none disabled:opacity-50",
   {
     variants: {
       variant: {
-        primary: "bg-brand-500 text-ink-900 hover:bg-brand-600",
-        secondary: "bg-ink-900 text-white hover:bg-ink-800",
-        outline: "border border-neutral-300 bg-white text-ink-900 hover:bg-neutral-50",
-        ghost: "text-ink-900 hover:bg-neutral-100",
+        primary: "bg-gradient-brand text-white shadow-glow hover:brightness-110 dark:shadow-glow-dark",
+        secondary: "bg-ink-900 text-white hover:bg-ink-800 dark:bg-surface-800 dark:hover:bg-surface-700",
+        outline:
+          "border border-neutral-300 bg-white text-ink-900 hover:bg-neutral-50 dark:border-surface-700 dark:bg-transparent dark:text-neutral-100 dark:hover:bg-surface-800",
+        ghost: "text-ink-900 hover:bg-neutral-100 dark:text-neutral-100 dark:hover:bg-surface-800",
         destructive: "bg-error text-white hover:bg-error/90",
       },
       size: {

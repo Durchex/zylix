@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import { Container } from "@/components/ui/Container";
 import { Rating } from "@/components/ui/Rating";
+import { FadeIn } from "@/components/motion/FadeIn";
 import { serverApiRequest } from "@/lib/server-api";
 import { ImageGallery } from "@/app/products/[slug]/ImageGallery";
 import { AddToCartPanel } from "@/app/products/[slug]/AddToCartPanel";
@@ -76,63 +77,65 @@ export default async function ProductPage({ params }: ProductPageProps) {
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
 
-      <nav className="mb-6 text-sm text-neutral-500">
-        <Link href="/shop" className="hover:text-ink-900">
+      <nav className="mb-6 text-sm text-neutral-500 dark:text-neutral-400">
+        <Link href="/shop" className="hover:text-ink-900 dark:hover:text-neutral-100">
           Shop
         </Link>{" "}
         /{" "}
-        <Link href={`/shop/${product.category.slug}`} className="hover:text-ink-900">
+        <Link href={`/shop/${product.category.slug}`} className="hover:text-ink-900 dark:hover:text-neutral-100">
           {product.category.name}
         </Link>{" "}
-        / <span className="text-ink-900">{product.name}</span>
+        / <span className="text-ink-900 dark:text-neutral-100">{product.name}</span>
       </nav>
 
       <div className="grid gap-10 lg:grid-cols-2">
-        <ImageGallery images={product.images} productName={product.name} />
+        <FadeIn>
+          <ImageGallery images={product.images} productName={product.name} />
+        </FadeIn>
 
-        <div>
-          <p className="text-xs font-medium uppercase tracking-wide text-neutral-400">
+        <FadeIn delay={0.1}>
+          <p className="text-xs font-medium uppercase tracking-wide text-neutral-400 dark:text-neutral-500">
             {product.brand}
           </p>
-          <h1 className="mt-1 text-2xl font-bold tracking-tight text-ink-900 sm:text-3xl">
+          <h1 className="mt-1 text-2xl font-bold tracking-tight text-ink-900 dark:text-neutral-50 sm:text-3xl">
             {product.name}
           </h1>
           <div className="mt-2">
             <Rating value={Number(product.avgRating)} count={product.reviewCount} />
           </div>
 
-          <div className="mt-6">
+          <div className="mt-6 rounded-2xl border border-neutral-200 bg-white/60 p-5 shadow-soft backdrop-blur dark:border-surface-800 dark:bg-surface-900/60">
             <AddToCartPanel product={product} />
           </div>
 
-          <div className="mt-8 border-t border-neutral-200 pt-6">
-            <h2 className="text-sm font-semibold text-ink-900">Description</h2>
-            <p className="mt-2 whitespace-pre-line text-sm text-neutral-600">
+          <div className="mt-8 border-t border-neutral-200 pt-6 dark:border-surface-800">
+            <h2 className="text-sm font-semibold text-ink-900 dark:text-neutral-100">Description</h2>
+            <p className="mt-2 whitespace-pre-line text-sm text-neutral-600 dark:text-neutral-400">
               {product.description}
             </p>
           </div>
 
           {product.attributes.length > 0 && (
-            <div className="mt-6 border-t border-neutral-200 pt-6">
-              <h2 className="text-sm font-semibold text-ink-900">Specifications</h2>
-              <dl className="mt-3 divide-y divide-neutral-100 text-sm">
+            <div className="mt-6 border-t border-neutral-200 pt-6 dark:border-surface-800">
+              <h2 className="text-sm font-semibold text-ink-900 dark:text-neutral-100">Specifications</h2>
+              <dl className="mt-3 divide-y divide-neutral-100 text-sm dark:divide-surface-800">
                 {product.attributes.map((attr) => (
                   <div key={attr.attributeName} className="flex justify-between py-2">
-                    <dt className="text-neutral-500">{attr.attributeName}</dt>
-                    <dd className="text-ink-900">{attr.value}</dd>
+                    <dt className="text-neutral-500 dark:text-neutral-400">{attr.attributeName}</dt>
+                    <dd className="text-ink-900 dark:text-neutral-100">{attr.value}</dd>
                   </div>
                 ))}
               </dl>
             </div>
           )}
 
-          <div className="mt-6 border-t border-neutral-200 pt-6 text-sm text-neutral-500">
+          <div className="mt-6 border-t border-neutral-200 pt-6 text-sm text-neutral-500 dark:border-surface-800 dark:text-neutral-400">
             Sold by{" "}
-            <Link href={`/brands/${product.seller.storeSlug}`} className="font-medium text-brand-600">
+            <Link href={`/brands/${product.seller.storeSlug}`} className="font-medium text-brand-600 dark:text-accent-400">
               {product.seller.storeName}
             </Link>
           </div>
-        </div>
+        </FadeIn>
       </div>
     </Container>
   );
