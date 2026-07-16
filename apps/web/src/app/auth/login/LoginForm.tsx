@@ -49,7 +49,7 @@ export function LoginForm() {
       }
 
       setSession(result.user, result.accessToken);
-      router.replace(searchParams.get("next") ?? "/account");
+      router.replace(searchParams.get("next") ?? "/");
     } catch (err) {
       setSubmitError(err instanceof ApiRequestError ? err.message : "Something went wrong.");
     }

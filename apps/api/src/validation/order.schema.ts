@@ -36,3 +36,9 @@ export const orderTrackingQuerySchema = z.object({
   orderNumber: z.string().trim().min(1),
   email: z.string().trim().toLowerCase().email(),
 });
+
+export const myOrderListQuerySchema = z.object({
+  page: z.coerce.number().int().positive().default(1),
+  pageSize: z.coerce.number().int().positive().max(50).default(10),
+});
+export type MyOrderListQuery = z.infer<typeof myOrderListQuerySchema>;

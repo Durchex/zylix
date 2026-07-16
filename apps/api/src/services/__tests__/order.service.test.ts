@@ -4,7 +4,14 @@ jest.mock("@/lib/prisma", () => ({
   prisma: {
     user: { findUniqueOrThrow: jest.fn() },
     product: { findMany: jest.fn() },
-    order: { findUnique: jest.fn(), update: jest.fn(), delete: jest.fn() },
+    order: {
+      findUnique: jest.fn(),
+      update: jest.fn(),
+      delete: jest.fn(),
+      findMany: jest.fn(),
+      findFirst: jest.fn(),
+      count: jest.fn(),
+    },
     payment: { update: jest.fn() },
     $transaction: jest.fn((arg: unknown) => {
       // order.service.ts calls $transaction two different ways: with a
@@ -34,7 +41,15 @@ import { ApiError } from "@/middleware/errorHandler";
 const mockPrisma = prisma as unknown as {
   user: { findUniqueOrThrow: jest.Mock };
   product: { findMany: jest.Mock };
-  order: { findUnique: jest.Mock; create: jest.Mock; update: jest.Mock; delete: jest.Mock };
+  order: {
+    findUnique: jest.Mock;
+    create: jest.Mock;
+    update: jest.Mock;
+    delete: jest.Mock;
+    findMany: jest.Mock;
+    findFirst: jest.Mock;
+    count: jest.Mock;
+  };
   payment: { update: jest.Mock };
   address: { create: jest.Mock };
   productVariant: { update: jest.Mock };
@@ -243,5 +258,38 @@ describe("orderService.track", () => {
 
     const result = await orderService.track("ZLX-ABCD1234", "owner@example.com");
     expect(result).toMatchObject({ orderNumber: "ZLX-ABCD1234", status: "PROCESSING" });
+  });
+});
+
+describe("orderService.listMine", () => {
+  it("scopes the query to the calling user's own orders", async () => {
+    mockPrisma.order.findMany.mockResolvedValueOnce([{ id: "order_1", userId: "user_1" }]);
+    mockPrisma.order.count.mockResolvedValueOnce(1);
+
+    const result = await orderService.listMine("user_1", { page: 1, pageSize: 10 });
+
+    expect(mockPrisma.order.findMany).toHaveBeenCalledWith(
+      expect.objectContaining({ where: { userId: "user_1" } }),
+    );
+    expect(result.items).toHaveLength(1);
+    expect(result.total).toBe(1);
+  });
+});
+
+describe("orderService.getMineById", () => {
+  it("throws 404 when the order doesn't exist or belongs to a different user", async () => {
+    mockPrisma.order.findFirst.mockResolvedValueOnce(null);
+
+    await expect(orderService.getMineById("user_1", "order_other_users")).rejects.toThrow(ApiError);
+    expect(mockPrisma.order.findFirst).toHaveBeenCalledWith(
+      expect.objectContaining({ where: { id: "order_other_users", userId: "user_1" } }),
+    );
+  });
+
+  it("returns the order when it belongs to the calling user", async () => {
+    mockPrisma.order.findFirst.mockResolvedValueOnce({ id: "order_1", userId: "user_1" });
+
+    const result = await orderService.getMineById("user_1", "order_1");
+    expect(result).toMatchObject({ id: "order_1" });
   });
 });

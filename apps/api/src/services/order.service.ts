@@ -3,7 +3,23 @@ import { prisma } from "@/lib/prisma";
 import { env } from "@/config/env";
 import { ApiError } from "@/middleware/errorHandler";
 import { getPaymentProvider } from "@/services/payment";
-import type { CreateOrderInput } from "@/validation/order.schema";
+import { paginate } from "@/utils/pagination";
+import type { CreateOrderInput, MyOrderListQuery } from "@/validation/order.schema";
+
+const myOrderListInclude = {
+  items: {
+    include: {
+      product: {
+        select: {
+          id: true,
+          slug: true,
+          name: true,
+          images: { orderBy: { sortOrder: "asc" as const }, take: 1 },
+        },
+      },
+    },
+  },
+} as const;
 
 const FLAT_SHIPPING_FEE = 2000;
 const FREE_SHIPPING_THRESHOLD = 100_000;
@@ -201,5 +217,39 @@ export const orderService = {
       placedAt: order.placedAt,
       estimatedDelivery: null as string | null,
     };
+  },
+
+  async listMine(userId: string, query: MyOrderListQuery) {
+    const where = { userId };
+
+    const [orders, total] = await Promise.all([
+      prisma.order.findMany({
+        where,
+        include: myOrderListInclude,
+        orderBy: { placedAt: "desc" },
+        skip: (query.page - 1) * query.pageSize,
+        take: query.pageSize,
+      }),
+      prisma.order.count({ where }),
+    ]);
+
+    return paginate(orders, total, query);
+  },
+
+  async getMineById(userId: string, orderId: string) {
+    const order = await prisma.order.findFirst({
+      where: { id: orderId, userId },
+      include: {
+        ...myOrderListInclude,
+        shippingAddress: true,
+        billingAddress: true,
+        statusHistory: { orderBy: { createdAt: "asc" } },
+        payments: { orderBy: { createdAt: "desc" }, take: 1 },
+      },
+    });
+    if (!order) {
+      throw new ApiError(404, "Order not found");
+    }
+    return order;
   },
 };
