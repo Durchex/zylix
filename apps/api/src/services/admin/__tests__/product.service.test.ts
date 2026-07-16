@@ -88,6 +88,41 @@ describe("adminProductService.create", () => {
   });
 });
 
+describe("adminProductService.bulkCreate", () => {
+  it("creates every product when all rows are valid", async () => {
+    mockPrisma.product.findUnique.mockResolvedValue(null); // no slug/sku collisions for either row
+    mockPrisma.product.create
+      .mockResolvedValueOnce({ id: "prod_1", ...baseInput })
+      .mockResolvedValueOnce({ id: "prod_2", ...baseInput, slug: "iphone-16", sku: "IPH16" });
+
+    const result = await adminProductService.bulkCreate([
+      baseInput,
+      { ...baseInput, slug: "iphone-16", sku: "IPH16" },
+    ]);
+
+    expect(result.succeeded).toHaveLength(2);
+    expect(result.failed).toHaveLength(0);
+  });
+
+  it("reports a per-row failure without blocking the other rows", async () => {
+    mockPrisma.product.findUnique
+      .mockResolvedValueOnce(null) // row 1 slug check
+      .mockResolvedValueOnce(null) // row 1 sku check
+      .mockResolvedValueOnce({ id: "existing" }); // row 2 slug check — duplicate
+    mockPrisma.product.create.mockResolvedValueOnce({ id: "prod_1", ...baseInput });
+
+    const result = await adminProductService.bulkCreate([
+      baseInput,
+      { ...baseInput, name: "Duplicate Product" },
+    ]);
+
+    expect(result.succeeded).toHaveLength(1);
+    expect(result.failed).toEqual([
+      { index: 1, name: "Duplicate Product", error: "A product with this slug already exists" },
+    ]);
+  });
+});
+
 describe("adminProductService.delete", () => {
   it("throws 404 for an unknown product", async () => {
     mockPrisma.product.findUnique.mockResolvedValueOnce(null);

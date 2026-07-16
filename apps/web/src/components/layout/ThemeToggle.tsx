@@ -10,8 +10,12 @@ export function ThemeToggle() {
 
   // Avoids a hydration mismatch: the server has no way to know the user's
   // system/stored preference, so we render a neutral placeholder until the
-  // client mounts and next-themes resolves the real theme.
-  useEffect(() => setMounted(true), []);
+  // client mounts and next-themes resolves the real theme. One-time mount
+  // flag, not a reactive sync — safe despite the lint rule's general warning.
+  useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    setMounted(true);
+  }, []);
 
   if (!mounted) {
     return <div className="h-10 w-10" aria-hidden="true" />;

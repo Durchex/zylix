@@ -74,8 +74,7 @@ function ProductSection({
 export default function HomePage() {
   return (
     <>
-      <section className="relative overflow-hidden bg-ink-900 text-white">
-        <div className="absolute inset-0 bg-gradient-brand opacity-90" aria-hidden="true" />
+      <section className="relative overflow-hidden bg-black text-white">
         <div className="absolute inset-0 bg-gradient-radial-glow" aria-hidden="true" />
         <Container className="relative flex flex-col items-start gap-6 py-20 sm:py-28">
           <span className="inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/10 px-4 py-1.5 text-xs font-medium uppercase tracking-[0.2em] text-white/90 backdrop-blur animate-fade-in">

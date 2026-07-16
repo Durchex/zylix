@@ -58,10 +58,15 @@ export default function AdminProductsPage() {
   return (
     <div>
       <div className="flex items-center justify-between">
-        <h1 className="text-2xl font-bold tracking-tight text-ink-900">Products</h1>
-        <Link href="/admin/catalog/products/new">
-          <Button>Add product</Button>
-        </Link>
+        <h1 className="text-2xl font-bold tracking-tight text-ink-900 dark:text-neutral-50">Products</h1>
+        <div className="flex gap-3">
+          <Link href="/admin/catalog/products/bulk">
+            <Button variant="outline">Bulk add</Button>
+          </Link>
+          <Link href="/admin/catalog/products/new">
+            <Button>Add product</Button>
+          </Link>
+        </div>
       </div>
 
       <div className="mt-6 flex flex-wrap gap-3">

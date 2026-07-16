@@ -43,6 +43,11 @@ export type CreateProductInput = z.infer<typeof createProductSchema>;
 export const updateProductSchema = createProductSchema.partial();
 export type UpdateProductInput = z.infer<typeof updateProductSchema>;
 
+export const bulkCreateProductSchema = z.object({
+  products: z.array(createProductSchema).min(1, "Add at least one product").max(50, "Upload at most 50 products at a time"),
+});
+export type BulkCreateProductInput = z.infer<typeof bulkCreateProductSchema>;
+
 export const adminProductListQuerySchema = z.object({
   status: z.enum(["DRAFT", "ACTIVE", "ARCHIVED"]).optional(),
   search: z.string().trim().optional(),

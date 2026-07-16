@@ -2,6 +2,7 @@ import type { Request, Response } from "express";
 import { adminProductService } from "@/services/admin/product.service";
 import {
   adminProductListQuerySchema,
+  bulkCreateProductSchema,
   createProductSchema,
   updateProductSchema,
 } from "@/validation/admin/product.schema";
@@ -22,6 +23,12 @@ export const adminProductController = {
     const input = createProductSchema.parse(req.body);
     const product = await adminProductService.create(input);
     res.status(201).json({ product });
+  },
+
+  async bulkCreate(req: Request, res: Response) {
+    const input = bulkCreateProductSchema.parse(req.body);
+    const result = await adminProductService.bulkCreate(input.products);
+    res.status(207).json(result);
   },
 
   async update(req: Request, res: Response) {

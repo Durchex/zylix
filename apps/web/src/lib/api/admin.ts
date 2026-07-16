@@ -42,6 +42,12 @@ export const adminProductsApi = {
   create(input: Record<string, unknown>) {
     return apiRequest<{ product: AdminProduct }>("/admin/products", { method: "POST", body: input });
   },
+  bulkCreate(products: Record<string, unknown>[]) {
+    return apiRequest<{ succeeded: AdminProduct[]; failed: Array<{ index: number; name: string; error: string }> }>(
+      "/admin/products/bulk",
+      { method: "POST", body: { products } },
+    );
+  },
   update(id: string, input: Record<string, unknown>) {
     return apiRequest<{ product: AdminProduct }>(`/admin/products/${id}`, {
       method: "PATCH",

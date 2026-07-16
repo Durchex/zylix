@@ -69,6 +69,31 @@ export const adminProductService = {
     });
   },
 
+  /**
+   * Creates products one at a time rather than in a single transaction so a
+   * bad row (duplicate slug/SKU, etc.) doesn't roll back the ones that were
+   * fine — the admin gets a per-row report and can fix just the failures.
+   */
+  async bulkCreate(products: CreateProductInput[]) {
+    const succeeded: Awaited<ReturnType<typeof adminProductService.create>>[] = [];
+    const failed: Array<{ index: number; name: string; error: string }> = [];
+
+    for (const [index, input] of products.entries()) {
+      try {
+        const product = await adminProductService.create(input);
+        succeeded.push(product);
+      } catch (err) {
+        failed.push({
+          index,
+          name: input.name,
+          error: err instanceof ApiError ? err.message : "Something went wrong",
+        });
+      }
+    }
+
+    return { succeeded, failed };
+  },
+
   async update(id: string, input: UpdateProductInput) {
     const existing = await prisma.product.findUnique({ where: { id } });
     if (!existing) {

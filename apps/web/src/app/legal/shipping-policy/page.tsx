@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import { LegalLayout } from "@/components/storefront/LegalLayout";
 
 export const metadata: Metadata = {
@@ -24,13 +25,13 @@ export default function ShippingPolicyPage() {
       <h2>Order tracking</h2>
       <p>
         Once your order ships, you can track its status from{" "}
-        <a href="/account/orders" className="text-brand-600 underline underline-offset-2">
+        <Link href="/account/orders" className="text-brand-600 underline underline-offset-2">
           My Orders
-        </a>{" "}
+        </Link>{" "}
         (if signed in), or via{" "}
-        <a href="/support/order-tracking" className="text-brand-600 underline underline-offset-2">
+        <Link href="/support/order-tracking" className="text-brand-600 underline underline-offset-2">
           Order Tracking
-        </a>{" "}
+        </Link>{" "}
         using your order number and email.
       </p>
 
