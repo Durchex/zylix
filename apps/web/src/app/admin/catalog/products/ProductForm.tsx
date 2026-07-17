@@ -36,6 +36,7 @@ const productFormSchema = z.object({
   currency: z.string().trim().min(1).default("NGN"),
   status: z.enum(["DRAFT", "ACTIVE", "ARCHIVED"]),
   isFeatured: z.boolean().default(false),
+  stockQuantity: z.coerce.number().int().nonnegative().default(0),
   images: z.array(z.object({ url: z.string().url("Enter a valid image URL"), altText: z.string().optional() })),
   variants: z.array(
     z.object({
@@ -62,6 +63,7 @@ const defaultValues: ProductFormValues = {
   currency: "NGN",
   status: "DRAFT",
   isFeatured: false,
+  stockQuantity: 0,
   images: [],
   variants: [],
 };
@@ -80,6 +82,7 @@ function toFormValues(product: AdminProduct): ProductFormValues {
     currency: product.currency,
     status: product.status,
     isFeatured: product.isFeatured,
+    stockQuantity: product.stockQuantity,
     images: product.images.map((img) => ({ url: img.url, altText: img.altText ?? "" })),
     variants: product.variants.map((v) => ({
       sku: v.sku,
@@ -219,6 +222,19 @@ export function ProductForm({ productId }: { productId?: string }) {
             </Select>
           </div>
           <Checkbox label="Featured product" {...register("isFeatured")} />
+          <div className="max-w-xs">
+            <Input
+              label="Stock quantity"
+              type="number"
+              helperText={
+                variantFields.fields.length > 0
+                  ? "Ignored — this product has variants, so stock is tracked per-variant below."
+                  : "Used directly since this product has no variants."
+              }
+              error={errors.stockQuantity?.message}
+              {...register("stockQuantity")}
+            />
+          </div>
         </CardBody>
       </Card>
 

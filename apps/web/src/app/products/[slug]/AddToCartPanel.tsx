@@ -30,7 +30,10 @@ export function AddToCartPanel({ product }: { product: ProductDetail }) {
     : product.compareAtPrice
       ? Number(product.compareAtPrice)
       : null;
-  const stock = activeVariant?.stockQuantity ?? 0;
+  // A product with no variants sells directly at basePrice/stockQuantity —
+  // only fall back to product-level stock when there's genuinely no variant
+  // to read from (not just because none is selected yet).
+  const stock = activeVariant ? activeVariant.stockQuantity : product.stockQuantity;
   const inStock = stock > 0;
 
   function handleAddToCart() {

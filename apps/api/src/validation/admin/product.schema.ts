@@ -32,6 +32,10 @@ export const createProductSchema = z.object({
   sku: z.string().trim().min(1),
   status: z.enum(["DRAFT", "ACTIVE", "ARCHIVED"]).default("DRAFT"),
   isFeatured: z.boolean().default(false),
+  // Only meaningful when the product has no variants — used directly as the
+  // purchasable stock count at basePrice. Ignored when variants exist (each
+  // variant tracks its own stockQuantity instead).
+  stockQuantity: z.number().int().nonnegative().default(0),
   weightKg: z.number().positive().nullable().optional(),
   seoTitle: z.string().trim().max(200).optional(),
   seoDescription: z.string().trim().max(300).optional(),

@@ -27,6 +27,9 @@ export interface AdminProduct {
   currency: string;
   status: "DRAFT" | "ACTIVE" | "ARCHIVED";
   isFeatured: boolean;
+  // Only meaningful when variants is empty — see the schema comment on
+  // Product.stockQuantity.
+  stockQuantity: number;
   avgRating: string;
   reviewCount: number;
   createdAt: string;

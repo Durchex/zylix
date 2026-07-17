@@ -52,7 +52,7 @@ export const orderService = {
         throw new ApiError(400, `Variant ${item.variantId} is not available`);
       }
 
-      const availableStock = variant ? variant.stockQuantity : Infinity;
+      const availableStock = variant ? variant.stockQuantity : product.stockQuantity;
       if (availableStock < item.quantity) {
         throw new ApiError(400, `Insufficient stock for ${product.name}`);
       }
@@ -110,6 +110,11 @@ export const orderService = {
             where: { id: item.variantId },
             data: { stockQuantity: { decrement: item.quantity } },
           });
+        } else {
+          await tx.product.update({
+            where: { id: item.productId },
+            data: { stockQuantity: { decrement: item.quantity } },
+          });
         }
       }
 
@@ -159,6 +164,11 @@ export const orderService = {
           if (item.variantId) {
             await tx.productVariant.update({
               where: { id: item.variantId },
+              data: { stockQuantity: { increment: item.quantity } },
+            });
+          } else {
+            await tx.product.update({
+              where: { id: item.productId },
               data: { stockQuantity: { increment: item.quantity } },
             });
           }

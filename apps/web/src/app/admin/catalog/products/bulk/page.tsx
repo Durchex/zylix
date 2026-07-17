@@ -26,6 +26,7 @@ const rowSchema = z.object({
   sku: z.string().trim().min(1, "Required"),
   description: z.string().trim().min(1, "Required"),
   basePrice: z.coerce.number().positive("Must be > 0"),
+  stockQuantity: z.coerce.number().int().nonnegative("Must be 0 or more"),
   imageUrl: z.string().trim().url("Enter a valid URL").optional().or(z.literal("")),
 });
 
@@ -43,6 +44,7 @@ const emptyRow: BulkFormValues["rows"][number] = {
   sku: "",
   description: "",
   basePrice: 0,
+  stockQuantity: 0,
   imageUrl: "",
 };
 
@@ -101,6 +103,7 @@ export default function BulkAddProductsPage() {
         sku: row.sku,
         description: row.description,
         basePrice: row.basePrice,
+        stockQuantity: row.stockQuantity,
         currency: "NGN",
         status: "ACTIVE" as const,
         isFeatured: false,
@@ -218,13 +221,21 @@ export default function BulkAddProductsPage() {
                 error={errors.rows?.[index]?.description?.message}
                 {...register(`rows.${index}.description`)}
               />
-              <Input
-                label="Price (NGN)"
-                type="number"
-                step="0.01"
-                error={errors.rows?.[index]?.basePrice?.message}
-                {...register(`rows.${index}.basePrice`)}
-              />
+              <div className="grid gap-4 sm:grid-cols-2">
+                <Input
+                  label="Price (NGN)"
+                  type="number"
+                  step="0.01"
+                  error={errors.rows?.[index]?.basePrice?.message}
+                  {...register(`rows.${index}.basePrice`)}
+                />
+                <Input
+                  label="Stock quantity"
+                  type="number"
+                  error={errors.rows?.[index]?.stockQuantity?.message}
+                  {...register(`rows.${index}.stockQuantity`)}
+                />
+              </div>
               <ImageUploadField
                 label="Image (optional)"
                 value={watch(`rows.${index}.imageUrl`) ?? ""}

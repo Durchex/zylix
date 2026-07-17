@@ -50,6 +50,7 @@ const baseInput = {
   sku: "IPH16PRO",
   status: "DRAFT" as const,
   isFeatured: false,
+  stockQuantity: 0,
   images: [],
   variants: [],
 };

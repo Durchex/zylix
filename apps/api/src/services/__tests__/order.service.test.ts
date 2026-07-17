@@ -3,7 +3,7 @@ import { prisma } from "@/lib/prisma";
 jest.mock("@/lib/prisma", () => ({
   prisma: {
     user: { findUniqueOrThrow: jest.fn() },
-    product: { findMany: jest.fn() },
+    product: { findMany: jest.fn(), update: jest.fn() },
     order: {
       findUnique: jest.fn(),
       update: jest.fn(),
@@ -40,7 +40,7 @@ import { ApiError } from "@/middleware/errorHandler";
 
 const mockPrisma = prisma as unknown as {
   user: { findUniqueOrThrow: jest.Mock };
-  product: { findMany: jest.Mock };
+  product: { findMany: jest.Mock; update: jest.Mock };
   order: {
     findUnique: jest.Mock;
     create: jest.Mock;
@@ -77,6 +77,7 @@ function buildActiveProduct(overrides: Partial<Record<string, unknown>> = {}) {
     sku: "IPH16PRO",
     sellerId: "seller_1",
     basePrice: { mul: (n: number) => ({ toString: () => String(1_250_000 * n) }), toString: () => "1250000" },
+    stockQuantity: 10,
     variants: [],
     ...overrides,
   };
@@ -94,6 +95,7 @@ describe("orderService.createOrder", () => {
       payments: [{ id: "payment_1" }],
     });
     mockPrisma.productVariant.update.mockResolvedValue({});
+    mockPrisma.product.update.mockResolvedValue({});
     mockPrisma.payment.update.mockResolvedValue({});
     mockPrisma.order.update.mockResolvedValue({});
     mockInitiate.mockResolvedValue({ providerRef: "ZLX-FLW-abc123", status: "PENDING", checkoutUrl: "https://pay.example/abc" });
@@ -174,6 +176,33 @@ describe("orderService.createOrder", () => {
     expect(mockPrisma.order.update).toHaveBeenCalledWith(
       expect.objectContaining({ data: expect.objectContaining({ status: "PAID" }) }),
     );
+  });
+
+  it("rejects an order for a variant-less product when quantity exceeds product.stockQuantity", async () => {
+    mockPrisma.product.findMany.mockResolvedValueOnce([buildActiveProduct({ stockQuantity: 2 })]);
+
+    await expect(
+      orderService.createOrder("user_1", {
+        items: [{ productId: "prod_1", quantity: 5 }],
+        shippingAddress,
+        paymentProvider: "FLUTTERWAVE",
+      }),
+    ).rejects.toThrow(ApiError);
+  });
+
+  it("decrements product.stockQuantity directly for a variant-less product", async () => {
+    mockPrisma.product.findMany.mockResolvedValueOnce([buildActiveProduct({ stockQuantity: 10 })]);
+
+    await orderService.createOrder("user_1", {
+      items: [{ productId: "prod_1", quantity: 3 }],
+      shippingAddress,
+      paymentProvider: "FLUTTERWAVE",
+    });
+
+    expect(mockPrisma.product.update).toHaveBeenCalledWith({
+      where: { id: "prod_1" },
+      data: { stockQuantity: { decrement: 3 } },
+    });
   });
 
   it("unwinds the order and restores stock when payment initiation fails", async () => {

@@ -38,6 +38,9 @@ export interface ProductSummary {
 export interface ProductDetail extends ProductSummary {
   description: string;
   sku: string;
+  // Only meaningful when variants is empty — the product sells directly at
+  // basePrice using this count. Ignored when variants exist.
+  stockQuantity: number;
   images: ProductImage[];
   variants: ProductVariant[];
   attributes: ProductAttribute[];

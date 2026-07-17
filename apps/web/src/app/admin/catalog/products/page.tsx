@@ -19,6 +19,17 @@ const statusBadgeVariant: Record<AdminProduct["status"], "success" | "neutral" |
   ARCHIVED: "warning",
 };
 
+// A product with variants tracks stock per-variant — "in stock" here means at
+// least one variant has stock, and toggling doesn't apply (it'd wipe
+// individual variant quantities), so those go to the edit page instead.
+function isInStock(product: AdminProduct): boolean {
+  return product.variants.length > 0
+    ? product.variants.some((v) => v.stockQuantity > 0)
+    : product.stockQuantity > 0;
+}
+
+const RESTOCK_DEFAULT_QUANTITY = 50;
+
 export default function AdminProductsPage() {
   const [products, setProducts] = useState<AdminProduct[] | null>(null);
   const [total, setTotal] = useState(0);
@@ -26,6 +37,7 @@ export default function AdminProductsPage() {
   const [status, setStatus] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [deletingId, setDeletingId] = useState<string | null>(null);
+  const [togglingId, setTogglingId] = useState<string | null>(null);
 
   const load = useCallback(() => {
     adminProductsApi
@@ -52,6 +64,19 @@ export default function AdminProductsPage() {
       setError(err instanceof ApiRequestError ? err.message : "Something went wrong.");
     } finally {
       setDeletingId(null);
+    }
+  }
+
+  async function handleToggleStock(product: AdminProduct) {
+    setTogglingId(product.id);
+    try {
+      const nextQuantity = isInStock(product) ? 0 : RESTOCK_DEFAULT_QUANTITY;
+      await adminProductsApi.update(product.id, { stockQuantity: nextQuantity });
+      load();
+    } catch (err) {
+      setError(err instanceof ApiRequestError ? err.message : "Something went wrong.");
+    } finally {
+      setTogglingId(null);
     }
   }
 
@@ -108,6 +133,7 @@ export default function AdminProductsPage() {
                 <th className="px-4 py-3">Category</th>
                 <th className="px-4 py-3">Price</th>
                 <th className="px-4 py-3">Status</th>
+                <th className="px-4 py-3">Stock</th>
                 <th className="px-4 py-3" />
               </tr>
             </thead>
@@ -120,6 +146,28 @@ export default function AdminProductsPage() {
                   <td className="px-4 py-3 text-ink-900 dark:text-neutral-100">{formatPrice(Number(product.basePrice))}</td>
                   <td className="px-4 py-3">
                     <Badge variant={statusBadgeVariant[product.status]}>{product.status}</Badge>
+                  </td>
+                  <td className="px-4 py-3">
+                    {product.variants.length > 0 ? (
+                      <span
+                        className="text-xs text-neutral-400 dark:text-neutral-500"
+                        title="This product has variants — manage stock per-variant from Edit."
+                      >
+                        Per-variant
+                      </span>
+                    ) : (
+                      <button
+                        type="button"
+                        onClick={() => handleToggleStock(product)}
+                        disabled={togglingId === product.id}
+                        className="disabled:opacity-50"
+                        title={isInStock(product) ? "Click to mark out of stock" : "Click to mark in stock"}
+                      >
+                        <Badge variant={isInStock(product) ? "success" : "error"}>
+                          {isInStock(product) ? "In stock" : "Out of stock"}
+                        </Badge>
+                      </button>
+                    )}
                   </td>
                   <td className="px-4 py-3 text-right">
                     <div className="flex justify-end gap-3">

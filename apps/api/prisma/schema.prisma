@@ -337,6 +337,10 @@ model Product {
   reviewCount    Int           @default(0)
   viewCount      Int           @default(0)
   weightKg       Decimal?      @db.Decimal(6, 2)
+  // Stock for products with no variants — they sell at basePrice using this
+  // count directly. A product WITH variants tracks stock per-variant instead
+  // (see ProductVariant.stockQuantity); this field is unused in that case.
+  stockQuantity  Int           @default(0)
 
   seoTitle       String?
   seoDescription String?

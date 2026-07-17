@@ -51,6 +51,9 @@ function toDetail(product: ProductWithDetailRelations) {
     ...toSummary(product),
     description: product.description,
     sku: product.sku,
+    // Only meaningful when variants is empty — see the schema comment on
+    // Product.stockQuantity.
+    stockQuantity: product.stockQuantity,
     seoTitle: product.seoTitle,
     seoDescription: product.seoDescription,
     images: product.images.map((img) => ({
