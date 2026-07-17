@@ -32,6 +32,8 @@ function buildProduct(overrides: Partial<Record<string, unknown>> = {}) {
     isFeatured: true,
     images: [{ id: "img_1", url: "https://example.com/a.jpg", altText: null, sortOrder: 0 }],
     category: { id: "cat_1", slug: "smartphones", name: "Smartphones" },
+    stockQuantity: 10,
+    variants: [],
     ...overrides,
   };
 }
@@ -81,8 +83,25 @@ describe("productService.list", () => {
       compareAtPrice: "1450000",
       primaryImage: { id: "img_1" },
       category: { slug: "smartphones" },
+      stockQuantity: 10,
+      defaultVariant: null,
     });
     expect(result.total).toBe(1);
+  });
+
+  it("includes the default variant's price/stock for products that have variants", async () => {
+    mockPrisma.product.findMany.mockResolvedValueOnce([
+      buildProduct({
+        variants: [{ id: "var_1", price: 1300000, stockQuantity: 5, isDefault: true }],
+      }),
+    ]);
+    mockPrisma.product.count.mockResolvedValueOnce(1);
+
+    const result = await productService.list(productListQuerySchema.parse({}));
+
+    expect(result.items[0]).toMatchObject({
+      defaultVariant: { id: "var_1", price: "1300000", stockQuantity: 5 },
+    });
   });
 
   it("orders by price ascending when sort=price-asc", async () => {

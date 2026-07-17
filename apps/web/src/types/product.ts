@@ -33,14 +33,15 @@ export interface ProductSummary {
   isFeatured: boolean;
   primaryImage: ProductImage | null;
   category: { id: string; slug: string; name: string };
+  // Only meaningful when defaultVariant is null — the product sells directly
+  // at basePrice using this count. Ignored when a variant exists.
+  stockQuantity: number;
+  defaultVariant: { id: string; price: string; stockQuantity: number } | null;
 }
 
 export interface ProductDetail extends ProductSummary {
   description: string;
   sku: string;
-  // Only meaningful when variants is empty — the product sells directly at
-  // basePrice using this count. Ignored when variants exist.
-  stockQuantity: number;
   images: ProductImage[];
   variants: ProductVariant[];
   attributes: ProductAttribute[];

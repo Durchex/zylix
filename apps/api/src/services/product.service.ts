@@ -7,6 +7,10 @@ import type { ProductListQuery } from "@/validation/product.schema";
 const summaryInclude = {
   images: { orderBy: { sortOrder: "asc" as const }, take: 1 },
   category: { select: { id: true, slug: true, name: true } },
+  // Just enough to know what "add to cart" from a grid card would add —
+  // the default variant if one exists, else nothing (falls back to the
+  // product's own basePrice/stockQuantity).
+  variants: { orderBy: [{ isDefault: "desc" as const }, { id: "asc" as const }], take: 1 },
 } satisfies Prisma.ProductInclude;
 
 const detailInclude = {
@@ -43,6 +47,14 @@ function toSummary(product: ProductWithSummaryRelations) {
         }
       : null,
     category: product.category,
+    stockQuantity: product.stockQuantity,
+    defaultVariant: product.variants[0]
+      ? {
+          id: product.variants[0].id,
+          price: product.variants[0].price.toString(),
+          stockQuantity: product.variants[0].stockQuantity,
+        }
+      : null,
   };
 }
 
