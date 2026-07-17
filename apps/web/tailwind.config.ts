@@ -6,20 +6,24 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        // Primary brand blue (was gold) — rebrand per the new premium
-        // electronics identity. Anchor: 600 = #1428A0.
+        // Dense-catalog identity (B&H Photo-style) — replaced the premium
+        // gradient blue. "brand" is now a classic web-link blue used for
+        // nav/links/accents; "cta" is the high-contrast orange used
+        // specifically for purchase actions (Add to Cart / Buy Now),
+        // matching the utilitarian professional-catalog convention rather
+        // than the earlier glassmorphism/gradient identity.
         brand: {
-          50: "#EEF0FB",
-          100: "#D6DBF5",
-          200: "#AEB8EB",
-          300: "#7F8FDD",
-          400: "#4D5FC7",
-          500: "#2438B0",
-          600: "#1428A0",
-          700: "#101F80",
-          800: "#0C1760",
-          900: "#080F40",
-          950: "#050A2A",
+          50: "#EFF6FF",
+          100: "#DBEAFE",
+          200: "#BFDBFE",
+          300: "#93C5FD",
+          400: "#60A5FA",
+          500: "#2563EB",
+          600: "#1D4ED8",
+          700: "#1E40AF",
+          800: "#1E3A8A",
+          900: "#172554",
+          950: "#0F172A",
         },
         secondary: {
           50: "#EEF2FC",
@@ -33,6 +37,18 @@ const config: Config = {
           800: "#112869",
           900: "#0B1B46",
           950: "#07112E",
+        },
+        cta: {
+          50: "#FFF7ED",
+          100: "#FFEDD5",
+          200: "#FED7AA",
+          300: "#FDBA74",
+          400: "#FB923C",
+          500: "#F97316",
+          600: "#EA580C",
+          700: "#C2410C",
+          800: "#9A3412",
+          900: "#7C2D12",
         },
         accent: {
           50: "#E6F9FF",
@@ -84,13 +100,15 @@ const config: Config = {
       fontFamily: {
         sans: ["var(--font-sans)", "system-ui", "sans-serif"],
       },
+      // Dense catalog sites use minimal/sharp corners, not the rounded
+      // "premium app" look — 2xl used to be 1.25rem, now a modest 0.375rem.
       borderRadius: {
-        xl: "0.875rem",
-        "2xl": "1.25rem",
+        xl: "0.25rem",
+        "2xl": "0.375rem",
       },
       boxShadow: {
-        soft: "0 2px 8px rgba(10, 10, 12, 0.06)",
-        elevated: "0 8px 24px rgba(10, 10, 12, 0.10)",
+        soft: "0 1px 2px rgba(0, 0, 0, 0.06)",
+        elevated: "0 1px 3px rgba(0, 0, 0, 0.1), 0 1px 2px rgba(0, 0, 0, 0.06)",
         glow: "0 8px 32px rgba(20, 40, 160, 0.25)",
         "glow-dark": "0 8px 32px rgba(0, 174, 239, 0.15)",
       },

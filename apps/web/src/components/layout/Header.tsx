@@ -68,7 +68,7 @@ export function Header() {
   }
 
   return (
-    <header className="glass sticky top-0 z-40">
+    <header className="sticky top-0 z-40 border-b border-neutral-200 bg-white dark:border-surface-800 dark:bg-surface-950">
       <Container className="flex h-16 items-center gap-4">
         <button
           type="button"
@@ -97,20 +97,20 @@ export function Header() {
           </Link>
         </nav>
 
-        <form onSubmit={handleSearchSubmit} className="ml-auto hidden max-w-sm flex-1 sm:block">
-          <div className="relative">
+        <form onSubmit={handleSearchSubmit} className="ml-auto hidden max-w-xl flex-1 sm:block">
+          <div className="flex">
             <input
               type="search"
               value={query}
               onChange={(e) => setQuery(e.target.value)}
-              placeholder="Search products..."
+              placeholder="Search products, brands, and categories..."
               aria-label="Search products"
-              className="h-10 w-full rounded-full border border-neutral-300 bg-neutral-50 pl-4 pr-10 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-500 dark:border-surface-800 dark:bg-surface-900 dark:text-neutral-100 dark:placeholder:text-neutral-500"
+              className="h-10 w-full rounded-l border border-r-0 border-neutral-300 bg-white pl-3 pr-3 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-500 dark:border-surface-700 dark:bg-surface-900 dark:text-neutral-100 dark:placeholder:text-neutral-500"
             />
             <button
               type="submit"
               aria-label="Submit search"
-              className="absolute right-1 top-1 flex h-8 w-8 items-center justify-center rounded-full text-neutral-500 hover:bg-neutral-200 dark:text-neutral-400 dark:hover:bg-surface-800"
+              className="flex h-10 w-11 shrink-0 items-center justify-center rounded-r border border-brand-700 bg-brand-600 text-white hover:bg-brand-700"
             >
               <svg viewBox="0 0 20 20" className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="1.5">
                 <circle cx="9" cy="9" r="6" />

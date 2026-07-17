@@ -42,7 +42,7 @@ export function FilterSidebar({ activeCategory }: { activeCategory?: string }) {
   return (
     <aside className="w-full shrink-0 space-y-6 lg:w-64">
       <div>
-        <h3 className="mb-3 text-sm font-semibold text-ink-900">Sort by</h3>
+        <h3 className="mb-3 text-sm font-semibold text-ink-900 dark:text-neutral-100">Sort by</h3>
         <Select
           aria-label="Sort products"
           value={searchParams.get("sort") ?? "newest"}
@@ -58,7 +58,7 @@ export function FilterSidebar({ activeCategory }: { activeCategory?: string }) {
 
       {!activeCategory && (
         <div>
-          <h3 className="mb-3 text-sm font-semibold text-ink-900">Category</h3>
+          <h3 className="mb-3 text-sm font-semibold text-ink-900 dark:text-neutral-100">Category</h3>
           <ul className="space-y-2">
             {CATEGORIES.map((cat) => (
               <li key={cat.slug}>
@@ -74,7 +74,7 @@ export function FilterSidebar({ activeCategory }: { activeCategory?: string }) {
       )}
 
       <div>
-        <h3 className="mb-3 text-sm font-semibold text-ink-900">Featured only</h3>
+        <h3 className="mb-3 text-sm font-semibold text-ink-900 dark:text-neutral-100">Featured only</h3>
         <Checkbox
           label="Show featured products"
           checked={searchParams.get("featured") === "true"}

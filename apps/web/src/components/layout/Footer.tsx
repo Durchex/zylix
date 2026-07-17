@@ -53,8 +53,7 @@ export function Footer() {
   if (isDashboardShell) return null;
 
   return (
-    <footer className="bg-ink-900 text-neutral-400">
-      <div className="h-0.5 bg-gradient-brand" />
+    <footer className="border-t-2 border-brand-700 bg-ink-900 text-neutral-400">
       <div className="mx-auto max-w-6xl px-6 py-12">
         <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-5">
           <div className="lg:col-span-1">

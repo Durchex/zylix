@@ -68,7 +68,7 @@ export function ProductCard({ product }: { product: ProductSummary }) {
   }
 
   return (
-    <div className="group relative flex flex-col overflow-hidden rounded-2xl border border-neutral-200 bg-white transition-all hover:-translate-y-1 hover:shadow-elevated dark:border-surface-800 dark:bg-surface-900 dark:hover:shadow-glow-dark">
+    <div className="group relative flex flex-col overflow-hidden rounded-xl border border-neutral-200 bg-white transition-colors hover:border-brand-400 dark:border-surface-800 dark:bg-surface-900 dark:hover:border-brand-600">
       <div className="absolute right-3 top-3 z-10 flex flex-col gap-2">
         <button
           type="button"
@@ -121,7 +121,7 @@ export function ProductCard({ product }: { product: ProductSummary }) {
               alt={product.primaryImage.altText ?? product.name}
               fill
               sizes="(min-width: 1024px) 25vw, (min-width: 640px) 33vw, 50vw"
-              className="object-contain p-6 transition-transform duration-300 group-hover:scale-105"
+              className="object-contain p-4"
             />
           ) : (
             <div className="flex h-full items-center justify-center text-sm text-neutral-400 dark:text-neutral-500">

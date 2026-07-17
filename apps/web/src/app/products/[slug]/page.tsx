@@ -3,7 +3,6 @@ import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import { Container } from "@/components/ui/Container";
 import { Rating } from "@/components/ui/Rating";
-import { FadeIn } from "@/components/motion/FadeIn";
 import { serverApiRequest } from "@/lib/server-api";
 import { ImageGallery } from "@/app/products/[slug]/ImageGallery";
 import { AddToCartPanel } from "@/app/products/[slug]/AddToCartPanel";
@@ -89,11 +88,9 @@ export default async function ProductPage({ params }: ProductPageProps) {
       </nav>
 
       <div className="grid gap-10 lg:grid-cols-2">
-        <FadeIn>
-          <ImageGallery images={product.images} productName={product.name} />
-        </FadeIn>
+        <ImageGallery images={product.images} productName={product.name} />
 
-        <FadeIn delay={0.1}>
+        <div>
           <p className="text-xs font-medium uppercase tracking-wide text-neutral-400 dark:text-neutral-500">
             {product.brand}
           </p>
@@ -104,7 +101,7 @@ export default async function ProductPage({ params }: ProductPageProps) {
             <Rating value={Number(product.avgRating)} count={product.reviewCount} />
           </div>
 
-          <div className="mt-6 rounded-2xl border border-neutral-200 bg-white/60 p-5 shadow-soft backdrop-blur dark:border-surface-800 dark:bg-surface-900/60">
+          <div className="mt-6 rounded-xl border border-neutral-200 bg-white p-5 dark:border-surface-800 dark:bg-surface-900">
             <AddToCartPanel product={product} />
           </div>
 
@@ -135,7 +132,7 @@ export default async function ProductPage({ params }: ProductPageProps) {
               {product.seller.storeName}
             </Link>
           </div>
-        </FadeIn>
+        </div>
       </div>
     </Container>
   );
