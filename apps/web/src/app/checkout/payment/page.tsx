@@ -81,7 +81,7 @@ export default function CheckoutPaymentPage() {
 
   return (
     <Container className="py-10">
-      <h1 className="text-3xl font-bold tracking-tight text-ink-900">Payment</h1>
+      <h1 className="text-3xl font-bold tracking-tight text-ink-900 dark:text-neutral-50">Payment</h1>
 
       <div className="mt-8 grid gap-8 lg:grid-cols-3">
         <div className="space-y-3 lg:col-span-2">
@@ -95,22 +95,22 @@ export default function CheckoutPaymentPage() {
               className={cn(
                 "flex w-full items-center justify-between rounded-2xl border p-4 text-left disabled:cursor-not-allowed disabled:opacity-50",
                 selectedMethod === method.id
-                  ? "border-brand-500 bg-brand-50"
-                  : "border-neutral-200 hover:border-neutral-300",
+                  ? "border-brand-500 bg-brand-50 dark:border-accent-500 dark:bg-surface-800"
+                  : "border-neutral-200 hover:border-neutral-300 dark:border-surface-700 dark:hover:border-surface-600",
               )}
             >
               <div>
                 <div className="flex items-center gap-2">
-                  <p className="font-medium text-ink-900">{method.label}</p>
+                  <p className="font-medium text-ink-900 dark:text-neutral-100">{method.label}</p>
                   {method.primary && <Badge variant="brand">Recommended</Badge>}
                   {!method.available && <Badge variant="neutral">Coming soon</Badge>}
                 </div>
-                <p className="text-sm text-neutral-500">{method.detail}</p>
+                <p className="text-sm text-neutral-500 dark:text-neutral-400">{method.detail}</p>
               </div>
               <div
                 className={cn(
                   "h-5 w-5 shrink-0 rounded-full border-2",
-                  selectedMethod === method.id ? "border-brand-500 bg-brand-500" : "border-neutral-300",
+                  selectedMethod === method.id ? "border-brand-500 bg-brand-500 dark:border-accent-500 dark:bg-accent-500" : "border-neutral-300 dark:border-surface-600",
                 )}
               />
             </button>
@@ -119,10 +119,10 @@ export default function CheckoutPaymentPage() {
 
         <Card className="h-fit">
           <CardBody className="space-y-4">
-            <h2 className="font-semibold text-ink-900">Total</h2>
+            <h2 className="font-semibold text-ink-900 dark:text-neutral-100">Total</h2>
             <div className="flex justify-between text-base font-semibold">
-              <span className="text-ink-900">Amount due</span>
-              <span className="text-ink-900">{formatPrice(subtotal, currency)}</span>
+              <span className="text-ink-900 dark:text-neutral-100">Amount due</span>
+              <span className="text-ink-900 dark:text-neutral-100">{formatPrice(subtotal, currency)}</span>
             </div>
             <Button className="w-full" isLoading={placing} onClick={handlePlaceOrder}>
               Place order

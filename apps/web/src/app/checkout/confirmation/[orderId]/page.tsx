@@ -49,18 +49,18 @@ export default async function CheckoutConfirmationPage({ params }: ConfirmationP
           </svg>
         )}
       </div>
-      <h1 className="mt-6 text-2xl font-bold tracking-tight text-ink-900">
+      <h1 className="mt-6 text-2xl font-bold tracking-tight text-ink-900 dark:text-neutral-50">
         {isPaid ? "Order Confirmed" : "Order Received — Payment Pending"}
       </h1>
-      <p className="mt-2 text-neutral-600">
+      <p className="mt-2 text-neutral-600 dark:text-neutral-400">
         {isPaid ? (
           <>
-            Order <span className="font-medium text-ink-900">{result.order.orderNumber}</span> has
+            Order <span className="font-medium text-ink-900 dark:text-neutral-100">{result.order.orderNumber}</span> has
             been placed and paid. We&rsquo;ll email you as it ships.
           </>
         ) : (
           <>
-            Order <span className="font-medium text-ink-900">{result.order.orderNumber}</span> has
+            Order <span className="font-medium text-ink-900 dark:text-neutral-100">{result.order.orderNumber}</span> has
             been created. If you chose bank transfer, complete your transfer and we&rsquo;ll
             confirm it within 1 business day. If you were redirected here after paying, your
             payment is still being confirmed — check back shortly.

@@ -51,8 +51,8 @@ export default function CheckoutPage() {
   if (items.length === 0) {
     return (
       <Container className="flex min-h-[50vh] flex-col items-center justify-center py-16 text-center">
-        <h1 className="text-2xl font-bold tracking-tight text-ink-900">Your cart is empty</h1>
-        <p className="mt-2 text-neutral-600">Add items to your cart before checking out.</p>
+        <h1 className="text-2xl font-bold tracking-tight text-ink-900 dark:text-neutral-50">Your cart is empty</h1>
+        <p className="mt-2 text-neutral-600 dark:text-neutral-400">Add items to your cart before checking out.</p>
         <Button className="mt-6" onClick={() => router.push("/shop")}>
           Browse products
         </Button>
@@ -70,7 +70,7 @@ export default function CheckoutPage() {
 
   return (
     <Container className="py-10">
-      <h1 className="text-3xl font-bold tracking-tight text-ink-900">Checkout</h1>
+      <h1 className="text-3xl font-bold tracking-tight text-ink-900 dark:text-neutral-50">Checkout</h1>
 
       <div className="mt-8 grid gap-8 lg:grid-cols-3">
         <form
@@ -78,7 +78,7 @@ export default function CheckoutPage() {
           onSubmit={handleSubmit(onSubmit)}
           noValidate
         >
-          <h2 className="font-semibold text-ink-900">Shipping Address</h2>
+          <h2 className="font-semibold text-ink-900 dark:text-neutral-100">Shipping Address</h2>
           <Input label="Full name" error={errors.fullName?.message} {...register("fullName")} />
           <Input label="Phone number" error={errors.phone?.message} {...register("phone")} />
           <Input label="Address line 1" error={errors.line1?.message} {...register("line1")} />
@@ -101,20 +101,20 @@ export default function CheckoutPage() {
 
         <Card className="h-fit">
           <CardBody className="space-y-3">
-            <h2 className="font-semibold text-ink-900">Order Summary</h2>
+            <h2 className="font-semibold text-ink-900 dark:text-neutral-100">Order Summary</h2>
             {items.map((item) => (
               <div key={`${item.productId}:${item.variantId}`} className="flex justify-between text-sm">
-                <span className="text-neutral-600">
+                <span className="text-neutral-600 dark:text-neutral-400">
                   {item.name} × {item.quantity}
                 </span>
-                <span className="text-ink-900">
+                <span className="text-ink-900 dark:text-neutral-100">
                   {formatPrice(item.unitPrice * item.quantity, item.currency)}
                 </span>
               </div>
             ))}
-            <div className="flex justify-between border-t border-neutral-200 pt-3 text-base font-semibold">
-              <span className="text-ink-900">Subtotal</span>
-              <span className="text-ink-900">{formatPrice(subtotal, currency)}</span>
+            <div className="flex justify-between border-t border-neutral-200 pt-3 text-base font-semibold dark:border-surface-800">
+              <span className="text-ink-900 dark:text-neutral-100">Subtotal</span>
+              <span className="text-ink-900 dark:text-neutral-100">{formatPrice(subtotal, currency)}</span>
             </div>
           </CardBody>
         </Card>

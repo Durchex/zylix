@@ -21,6 +21,7 @@ export function AddToCartPanel({ product }: { product: ProductDetail }) {
   const [variantId, setVariantId] = useState<string | undefined>(defaultVariant?.id);
   const [quantity, setQuantity] = useState(1);
   const [justAdded, setJustAdded] = useState(false);
+  const [shareState, setShareState] = useState<"idle" | "copied">("idle");
 
   const activeVariant = product.variants.find((v) => v.id === variantId) ?? defaultVariant;
   const price = activeVariant ? Number(activeVariant.price) : Number(product.basePrice);
@@ -46,6 +47,21 @@ export function AddToCartPanel({ product }: { product: ProductDetail }) {
     });
     setJustAdded(true);
     setTimeout(() => setJustAdded(false), 2000);
+  }
+
+  async function handleShare() {
+    const url = window.location.href;
+    if (navigator.share) {
+      try {
+        await navigator.share({ title: product.name, url });
+      } catch {
+        // user cancelled the native share sheet — not an error
+      }
+      return;
+    }
+    await navigator.clipboard.writeText(url);
+    setShareState("copied");
+    setTimeout(() => setShareState("idle"), 2000);
   }
 
   return (
@@ -143,6 +159,30 @@ export function AddToCartPanel({ product }: { product: ProductDetail }) {
           >
             <path d="M10 17s-6.5-4-6.5-8.5a3.8 3.8 0 016.5-2.6A3.8 3.8 0 0116.5 8.5C16.5 13 10 17 10 17z" />
           </svg>
+        </Button>
+        <Button
+          variant="ghost"
+          aria-label="Share this product"
+          onClick={handleShare}
+        >
+          {shareState === "copied" ? (
+            <svg viewBox="0 0 20 20" className="h-5 w-5 text-success" fill="none" stroke="currentColor" strokeWidth="2">
+              <path d="M4 10l4 4 8-8" strokeLinecap="round" strokeLinejoin="round" />
+            </svg>
+          ) : (
+            <svg
+              viewBox="0 0 20 20"
+              className="h-5 w-5 text-neutral-500 dark:text-neutral-400"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="1.5"
+            >
+              <circle cx="15" cy="5" r="2" />
+              <circle cx="5" cy="10" r="2" />
+              <circle cx="15" cy="15" r="2" />
+              <path d="M6.7 9l6.6-3.2M6.7 11l6.6 3.2" strokeLinecap="round" />
+            </svg>
+          )}
         </Button>
       </div>
     </div>
